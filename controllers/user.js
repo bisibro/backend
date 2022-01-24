@@ -25,7 +25,7 @@ let login = async (req, res) => {
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       if (password == existingUser.password) {
-        res.status(200).json({ mesage: "Logged In" });
+        res.status(200).json(existingUser);
       } else {
         res.status(400).json({ message: "User does not exist" });
       }

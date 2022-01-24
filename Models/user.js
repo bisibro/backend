@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
   bankName: String,
   country: String,
   block: {
-    type: String,
+    type: String, 
     default: "false"
   },
   balance: String
