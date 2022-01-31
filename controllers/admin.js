@@ -28,7 +28,7 @@ let getAllUsers = (_, res) => {
       if (err) return res.json(err);
 
       // res.send(docs);
-      res.render("allUsers", {user: docs})
+      res.render("allusers", {user: docs})
       // console.log(docs)
     }).limit(20).sort({createdAt: -1});
   } catch (error) {
