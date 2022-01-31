@@ -16,6 +16,8 @@ const userSchema = new mongoose.Schema({
     default: "false"
   },
   balance: String
+}, {
+  timestamps: true
 });
 
 const User = new mongoose.model("User", userSchema);
