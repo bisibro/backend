@@ -2,7 +2,7 @@ const User = require("../Models/user");
 const bcrypt = require("bcryptjs");
 
 let register = async (req, res) => {
-  let { username, fullName, email, phone, picture, password } = req.body;
+  let { username, fullName, email, phone, gender, password } = req.body;
 
   try {
     const existingUser = await User.findOne({ username });

@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   accountName: String,
   bankName: String,
   country: String,
+  gender: String,
   block: {
     type: String, 
     default: "false"
