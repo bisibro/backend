@@ -2,7 +2,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const cors = require('cors')({origin: '*'})
+const cors = require('cors')
 const mongoose = require('mongoose')
 
 const db = mongoose.connection
@@ -25,6 +25,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.set("view engine", "hbs");
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors({
+    origin: '*',
+    methods: ['POST','PUT', 'GET', 'OPTIONS', 'HEAD'],
+    credentials: true
+  
+  }));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
