@@ -142,9 +142,9 @@ let createCharge = (req, res) => {
 
     const charge = await Charge.create(chargeData);
 
-    console.log(charge);
+    
 
-    res.send(charge);
+    res.json(charge);
   });
 };
 
