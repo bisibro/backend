@@ -29,7 +29,7 @@ let login = async (req, res) => {
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       if (password == existingUser.password) {
-        return res.status(200).json(existingUser);
+        return res.status(200).json({user: existingUser});
       } else {
         res.status(400).json({ message: "User does not exist" });
       }
