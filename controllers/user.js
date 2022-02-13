@@ -15,7 +15,7 @@ let register = async (req, res) => {
 
     const newUser = new User(req.body);
     await newUser.save().then(() => {
-      res.send(newUser);
+      res.status(200).json({ user: newUser });
     });
   } catch (error) {
     res.json({ message: error });
@@ -29,7 +29,7 @@ let login = async (req, res) => {
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       if (password == existingUser.password) {
-        return res.status(200).json({user: existingUser});
+        return res.status(200).json({ user: existingUser });
       } else {
         res.status(400).json({ message: "User does not exist" });
       }
@@ -56,7 +56,7 @@ let bankInfo = async (req, res) => {
       if (!result)
         return res.status(406).json({ message: "User does not exist" });
 
-      res.status(200).json(result);
+      res.status(200).json({ user: result });
     })
     .catch((err) => {
       console.log(err);
@@ -81,7 +81,7 @@ let profile = async (req, res) => {
       if (!result)
         return res.status(406).json({ message: "User does not exist" });
 
-      res.status(200).json(result);
+      res.status(200).json({ user: result });
     })
     .catch((err) => {
       console.log(err);
@@ -112,7 +112,7 @@ let changePassword = async (req, res) => {
 
     user.password = newPassword;
 
-    user.save().then(() => res.status(200).json(user));
+    user.save().then(() => res.status(200).json({ user: user }));
   } catch (error) {
     res.status(500).json(error);
   }
@@ -141,8 +141,6 @@ let createCharge = (req, res) => {
     };
 
     const charge = await Charge.create(chargeData);
-
-    
 
     res.json(charge);
   });
