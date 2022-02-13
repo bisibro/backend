@@ -7,16 +7,29 @@ const userSchema = new mongoose.Schema({
   phone: String,
   picture: String,
   password: String,
-  accountNumber: String,
-  accountName: String,
-  bankName: String,
+
+  accountNumber: {
+    type: String,
+    default: ""
+  },
+  accountName: {
+    type: String,
+    default: ""
+  },
+  bankName: {
+    type: String,
+    default: ""
+  },
   country: String,
   gender: String,
   block: {
     type: String, 
     default: "false"
   },
-  balance: String
+  balance: {
+    type: String,
+    default: ""
+  }
 }, {
   timestamps: true
 });
