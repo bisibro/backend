@@ -19,18 +19,21 @@ var adminRouter = require('./routes/Admin')
 
 var app = express();
 
+app.use(cors({
+  origin: '*',
+  allowedHeaders: ["Content-Type", "Authorization", "Access-Control-Allow-Methods", "Access-Control-Request-Headers"],
+  methods: ['POST','PUT', 'GET', 'OPTIONS', 'HEAD'],
+  credentials: true,
+  enablePreflight: true
+  
+}));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.set("view engine", "hbs");
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors({
-    origin: '*',
-    methods: ['POST','PUT', 'GET', 'OPTIONS', 'HEAD'],
-    credentials: true
-  
-  }));
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
