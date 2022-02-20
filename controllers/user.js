@@ -6,12 +6,12 @@ const { Charge } = resources;
 Client.init("555a6d1b-63ee-4ff7-8b80-b325819cf444").setRequestTimeout(3000);
 
 let register = async (req, res) => {
-  let { username, fullName, email, phone, gender, password } = req.body;
+  let { username, fullName, email, phone,  password } = req.body;
 
   try {
     const existingUser = await User.findOne({ username });
 
-    if (existingUser) throw "User Already Exists";
+    if (existingUser) return res.status(400).json("User Already Exists");
 
     const newUser = new User(req.body);
     await newUser.save().then(() => {
@@ -40,53 +40,42 @@ let login = async (req, res) => {
 };
 
 let bankInfo = async (req, res) => {
-  const idd = req.params;
-
-  let id;
-  Object.keys(idd).map(function (key) {
-    id = idd[key];
-  });
+  
 
   let body = await req.body;
 
-  await User.findByIdAndUpdate(id, body, {
-    useFindAndModify: false,
-  })
-    .then((result) => {
-      if (!result)
-        return res.status(406).json({ message: "User does not exist" });
+  
 
-      res.status(200).json({ user: result });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({ message: err });
-    });
+  await User.findOneAndUpdate({_id: req.params.id}, body, {new :true})
+  .then(async (result) => {
+        if (!result)
+          return res.status(406).json({ message: "User does not exist" });
+  
+        await res.status(200).json({ user: result });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json({ message: err });
+      });
 };
 
 let profile = async (req, res) => {
-  const idd = req.params;
-
-  let id;
-  Object.keys(idd).map(function (key) {
-    id = idd[key];
-  });
-
+  
   let body = await req.body;
 
-  await User.findByIdAndUpdate(id, body, {
-    useFindAndModify: false,
-  })
-    .then((result) => {
-      if (!result)
-        return res.status(406).json({ message: "User does not exist" });
+  
 
-      res.status(200).json({ user: result });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({ message: err });
-    });
+  await User.findOneAndUpdate({_id: req.params.id}, body, {new :true})
+  .then(async (result) => {
+        if (!result)
+          return res.status(406).json({ message: "User does not exist" });
+  
+        await res.status(200).json({ user: result });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json({ message: err });
+      });
 };
 
 let changePassword = async (req, res) => {
