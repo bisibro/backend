@@ -1,9 +1,11 @@
 const User = require("../Models/user");
 const bcrypt = require("bcryptjs");
 const cors = require("cors")({ origin: "*" });
+const cron = require('node-cron')
 const { Client, resources } = require("coinbase-commerce-node");
 const { Charge } = resources;
 Client.init("555a6d1b-63ee-4ff7-8b80-b325819cf444").setRequestTimeout(3000);
+
 
 let register = async (req, res) => {
   let { username, fullName, email, phone,  password } = req.body;
@@ -135,12 +137,44 @@ let createCharge = (req, res) => {
   });
 };
 
+let getUser = (req, res) => {
+  let id = req.params.id
+  User.find({_id: id}, (err, user) => {
+    if (err) {
+      console.log(err);
+    }
+    res.json(user);
+  });
+}
+
+let increaseEarnings = async (req, res) => {
+
+
+   let earn  = (Math.floor(Math.random() * 9) + 5).toString()
+  console.log(earn)
+  return await User.updateMany({block: !"true"}, {"$set":{earnings: earn}}, {"multi": true}).then((res)=>{
+    console.log(res)
+  } ).catch(err => console.log(err))
+}
+
+let ublocked = (req, res) => {
+  User.find({block: !"true"},  (err, docs) => {
+    if(err){console.log(err)}
+    else{res.send(docs)}
+  })
+}
+
+
+
 module.exports = {
   register,
   login,
   bankInfo,
+  getUser,
   findall,
   changePassword,
   profile,
   createCharge,
+  increaseEarnings,
+  ublocked
 };

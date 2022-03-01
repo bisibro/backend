@@ -3,7 +3,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors')
+
 const mongoose = require('mongoose')
+const cron = require('node-cron')
 
 const db = mongoose.connection
 
@@ -15,7 +17,8 @@ db.once('open', ()=> console.log('Database connected'))
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var adminRouter = require('./routes/Admin')
+var adminRouter = require('./routes/Admin');
+const User = require('./Models/user');
 
 var app = express();
 
@@ -38,5 +41,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/admin', adminRouter)
+
+ cron.schedule('0 0 0 * * *', async () =>  {
+  let earn  =  (Math.floor(Math.random() * 9) + 5).toString()
+  console.log(earn)
+ return await User.updateMany({block: !"true"}, {"$set":{earnings: earn}}, {"multi": true}).then((res)=>{
+    console.log(res)
+  } ).catch(err => console.log(err))
+});
 
 module.exports = app;

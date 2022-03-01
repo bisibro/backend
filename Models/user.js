@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    earnings: {
+      type: String,
+      default: ""
+    }
   },
   {
     timestamps: true,
