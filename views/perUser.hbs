@@ -51,15 +51,14 @@
 
 
 
-                    <div class="col-md-6"><label class="labels">New Balance</label><input type="text" class="form-control" name="balance" value={{user.balance}} ></div>
+                    <div class="col-md-6"><label class="labels">New Balance</label><input type="number" class="form-control" name="balance" value={{user.balance}} ></div>
 
 
                     <div class="col-md-6"><label class="labels">User Blocked?</label><input type="text"  readonly class="form-control" value={{user.block}}></div>
 
                     <div class="col-md-6"><label class="labels">Block</label><select class="form-select" aria-label="Default select example" name="block">
-  <option selected>Not Blocked</option>
+  <option selected value="false">No</option>
   <option value="true">Yes</option>
-  <option value="false">No</option>
   
 </select></div>
                 </div>

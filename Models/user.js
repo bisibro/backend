@@ -27,14 +27,22 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "false",
     },
+    active:{
+      type: Boolean,
+      default: false
+    },
     balance: {
-      type: String,
-      default: "",
+      type: Number,
+      default: null,
     },
     earnings: {
-      type: String,
-      default: ""
-    }
+      type: Number,
+      default: null
+    },
+    loanAmount: {
+      type: Number,
+      default: null
+    },
   },
   {
     timestamps: true,

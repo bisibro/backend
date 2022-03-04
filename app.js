@@ -43,10 +43,17 @@ app.use('/users', usersRouter);
 app.use('/admin', adminRouter)
 
  cron.schedule('0 0 0 * * *', async () =>  {
-  let earn  =  (Math.floor(Math.random() * 9) + 5).toString()
-  console.log(earn)
- return await User.updateMany({block: !"true"}, {"$set":{earnings: earn}}, {"multi": true}).then((res)=>{
-    console.log(res)
+  let earn  =  (Math.floor(Math.random() * 9) + 5)
+  // console.log(earn)
+ return await User.updateMany({"balance": {$ne: null}}, {"$set":{earnings: earn}}, {"multi": true}).then(async (res)=>{
+    // console.log(res)
+
+    return await User.updateMany({"balance": {$ne: null}}, {$inc: {'balance': earn}}, {"multi": true}).then((res)=>{
+      console.log(res)
+      
+  
+    } ).catch(err => console.log(err))
+
   } ).catch(err => console.log(err))
 });
 
