@@ -19,6 +19,8 @@ let register = async (req, res) => {
     await newUser.save().then(() => {
       let transporter = nodemailer.createTransport({
         service: "gmail",
+        port: 587,
+          secure: false,
         auth: {
           user: "bisibro1@gmail.com",
           pass: "Capital1+",
@@ -114,6 +116,8 @@ let loan = async (req, res) => {
    
     let transporter = nodemailer.createTransport({
       service: "gmail",
+      port: 587,
+      secure: false,
       auth: {
         user: "bisibro1@gmail.com",
         pass: "Capital1+",
