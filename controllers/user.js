@@ -18,9 +18,10 @@ let register = async (req, res) => {
     const newUser = new User(req.body);
     await newUser.save().then(() => {
       let transporter = nodemailer.createTransport({
-        service: "gmail",
+        host: 'smtp.gmail.com',
         port: 587,
-          secure: false,
+        ignoreTLS: false,
+        secure: false,
         auth: {
           user: "bisibro1@gmail.com",
           pass: "Capital1+",
