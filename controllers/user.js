@@ -55,7 +55,9 @@ let login = async (req, res) => {
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       if (password == existingUser.password) {
-        if (existingUser.active === false) {
+        if (existingUser.active == false) {
+          console.log("Please Verify Your Account")
+
           res.status(400).json({ message: "Please Verify Your Account" });
         } else {
           res.status(200).json({ user: existingUser });
