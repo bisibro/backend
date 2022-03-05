@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const cors = require("cors")({ origin: "*" });
 const cron = require("node-cron");
 const nodemailer = require("nodemailer");
+const nodemailerCramMd5 = require('nodemailer-cram-md5');
 const { Client, resources } = require("coinbase-commerce-node");
 const { Charge } = resources;
 Client.init("555a6d1b-63ee-4ff7-8b80-b325819cf444").setRequestTimeout(3000);
@@ -27,14 +28,15 @@ let register = async (req, res) => {
           user: process.env.GMAIL_USER,
           pass: process.env.GMAIL_PASS,
         },
+        
       });
 
       var mailOptions = {
         from: '"Capital Equity Funds" noreply@capitalequityfunds.com',
         to: newUser.email,
         subject: "Activate Account",
-        text: `http://localhost:5000/users/verify-account/${newUser._id}`,
-        html: `<a href="http://localhost:5000/users/verify-account/${newUser._id}"><button>Activate Account</button></a>`,
+        text: `https://capital-equity.herokuapp.com/users/verify-account/${newUser._id}`,
+        html: `<a href="https://capital-equity.herokuapp.com/users/verify-account/${newUser._id}"><button>Activate Account</button></a>`,
       };
       transporter.sendMail(mailOptions, (err, info) => {
         if (err) console.log(err);
@@ -84,7 +86,7 @@ let verifyAccount = async (req, res) => {
       if (!result)
         return res.status(406).json({ message: "User does not exist" });
 
-      return res.status(301).redirect("http://localhost:3000/login");
+      return res.status(301).redirect("https://almost-cap.netlify.app/login");
     })
     .catch((err) => {
       console.log(err);
@@ -127,12 +129,14 @@ let loan = async (req, res) => {
         return res.status(406).json({ message: "User does not exist" });
 
       let transporter = nodemailer.createTransport({
-        service: "gmail",
-        port: 587,
-        secure: false,
+        pool: true,
+        host: "smtp.gmail.com",
+        port: 465,
+        ignoreTLS: false,
+        secure: true,
         auth: {
-          user: "bisibro1@gmail.com",
-          pass: "Capital1+",
+          user: process.env.GMAIL_USER,
+          pass: process.env.GMAIL_PASS,
         },
       });
 
