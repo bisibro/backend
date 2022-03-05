@@ -58,7 +58,7 @@ let login = async (req, res) => {
         if (existingUser.active == false) {
           console.log("Please Verify Your Account")
 
-          res.status(400).json({ msg: "Please Verify Your Account" });
+          res.status(200).json({ msg: "Please Verify Your Account" });
         } else {
           res.status(200).json({ user: existingUser });
         }
