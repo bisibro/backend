@@ -18,13 +18,14 @@ let register = async (req, res) => {
     const newUser = new User(req.body);
     await newUser.save().then(() => {
       let transporter = nodemailer.createTransport({
+        pool: true,
         host: 'smtp.gmail.com',
-        port: 587,
+        port: 465,
         ignoreTLS: false,
-        secure: false,
+        secure: true,
         auth: {
-          user: "bisibro1@gmail.com",
-          pass: "Capital1+",
+          user: process.env.GMAIL_USER,
+          pass: process.env.GMAIL_PASS,
         },
       });
 
@@ -36,7 +37,7 @@ let register = async (req, res) => {
         html: `<a href="http://localhost:5000/users/verify-account/${newUser._id}"><button>Activate Account</button></a>`
       };
       transporter.sendMail(mailOptions, (err, info) => {
-        if (err) throw err;
+        if (err) console.log(err)
         res.status(200).json({ user: newUser });
         console.log(info);
       });
