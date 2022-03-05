@@ -19,7 +19,7 @@ let register = async (req, res) => {
     await newUser.save().then(() => {
       let transporter = nodemailer.createTransport({
         pool: true,
-        host: 'smtp.gmail.com',
+        host: "smtp.gmail.com",
         port: 465,
         ignoreTLS: false,
         secure: true,
@@ -34,16 +34,16 @@ let register = async (req, res) => {
         to: newUser.email,
         subject: "Activate Account",
         text: `http://localhost:5000/users/verify-account/${newUser._id}`,
-        html: `<a href="http://localhost:5000/users/verify-account/${newUser._id}"><button>Activate Account</button></a>`
+        html: `<a href="http://localhost:5000/users/verify-account/${newUser._id}"><button>Activate Account</button></a>`,
       };
       transporter.sendMail(mailOptions, (err, info) => {
-        if (err) console.log(err)
+        if (err) console.log(err);
         res.status(200).json({ user: newUser });
         console.log(info);
       });
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.json({ message: error });
   }
 };
@@ -57,9 +57,9 @@ let login = async (req, res) => {
       if (password == existingUser.password) {
         if (existingUser.active === false) {
           res.status(400).json({ message: "Please Verify Your Account" });
+        } else {
+          res.status(200).json({ user: existingUser });
         }
-
-        return res.status(200).json({ user: existingUser });
       } else {
         res.status(400).json({ message: "User does not exist" });
       }
@@ -74,19 +74,20 @@ let verifyAccount = async (req, res) => {
 
   let verifyUser = await User.find({ _id: id });
 
-  if(!verifyUser) return res.status(400).json({ message: "Something went wrong" });
+  if (!verifyUser)
+    return res.status(400).json({ message: "Something went wrong" });
 
-  await User.findOneAndUpdate({ _id: id }, {active: true}, { new: true })
-  .then(async (result) => {
-    if (!result) return res.status(406).json({ message: "User does not exist" });
+  await User.findOneAndUpdate({ _id: id }, { active: true }, { new: true })
+    .then(async (result) => {
+      if (!result)
+        return res.status(406).json({ message: "User does not exist" });
 
-    return res.status(301).redirect("http://localhost:3000/login");
-  })
-  .catch((err) => {
-    console.log(err);
-    res.status(500).json({ message: err });
-  });
-  
+      return res.status(301).redirect("http://localhost:3000/login");
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: err });
+    });
 };
 
 let bankInfo = async (req, res) => {
@@ -107,45 +108,49 @@ let bankInfo = async (req, res) => {
 
 let loan = async (req, res) => {
   const id = req.params.id;
-  let { loanAmount} = req.body
+  let { loanAmount } = req.body;
 
   let verifyUser = await User.find({ _id: id });
 
-  if(!verifyUser) return res.status(400).json({ message: "Something went wrong" });
+  if (!verifyUser)
+    return res.status(400).json({ message: "Something went wrong" });
 
-  await User.findOneAndUpdate({ _id: id }, {loanAmount: loanAmount}, { new: true })
-  .then(async (result) => {
-    if (!result) return res.status(406).json({ message: "User does not exist" });
-   
-    let transporter = nodemailer.createTransport({
-      service: "gmail",
-      port: 587,
-      secure: false,
-      auth: {
-        user: "bisibro1@gmail.com",
-        pass: "Capital1+",
-      },
+  await User.findOneAndUpdate(
+    { _id: id },
+    { loanAmount: loanAmount },
+    { new: true }
+  )
+    .then(async (result) => {
+      if (!result)
+        return res.status(406).json({ message: "User does not exist" });
+
+      let transporter = nodemailer.createTransport({
+        service: "gmail",
+        port: 587,
+        secure: false,
+        auth: {
+          user: "bisibro1@gmail.com",
+          pass: "Capital1+",
+        },
+      });
+
+      var mailOptions = {
+        from: '"Capital Equity Funds" noreply@capitalequityfunds.com',
+        to: result.email,
+        subject: "Loan Request",
+        text: `Dear ${result.username}, Your Loan Request has been Receieved`,
+      };
+      transporter.sendMail(mailOptions, (err, info) => {
+        if (err) throw err;
+        res.status(200).json({ msg: true });
+        console.log(info);
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ message: err });
     });
-
-    var mailOptions = {
-      from: '"Capital Equity Funds" noreply@capitalequityfunds.com',
-      to: result.email,
-      subject: "Loan Request",
-      text: `Dear ${result.username}, Your Loan Request has been Receieved`,
-    };
-    transporter.sendMail(mailOptions, (err, info) => {
-      if (err) throw err;
-      res.status(200).json({ msg: true });
-      console.log(info);
-    });
-  })
-  .catch((err) => {
-    console.log(err);
-    res.status(500).json({ message: err });
-  });
-  
-
-}
+};
 
 let profile = async (req, res) => {
   let body = await req.body;
@@ -245,7 +250,7 @@ let increaseEarnings = async (req, res) => {
 };
 
 let ublocked = (req, res) => {
-  User.find({ "balance": {$ne: null} }, (err, docs) => {
+  User.find({ balance: { $ne: null } }, (err, docs) => {
     if (err) {
       console.log(err);
     } else {
@@ -264,7 +269,7 @@ let deleteAll = (req, res) => {
         message: err.message || "Some error occurred while Deleting.",
       });
     });
-}
+};
 
 let sendmail = (req, res) => {
   var transporter = nodemailer.createTransport({
@@ -303,5 +308,5 @@ module.exports = {
   loan,
   ublocked,
   sendmail,
-  deleteAll
+  deleteAll,
 };
