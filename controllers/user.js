@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const cors = require("cors")({ origin: "*" });
 const cron = require("node-cron");
 const nodemailer = require("nodemailer");
-const nodemailerCramMd5 = require('nodemailer-cram-md5');
+const nodemailerCramMd5 = require("nodemailer-cram-md5");
 const { Client, resources } = require("coinbase-commerce-node");
 const { Charge } = resources;
 Client.init("555a6d1b-63ee-4ff7-8b80-b325819cf444").setRequestTimeout(3000);
@@ -28,7 +28,6 @@ let register = async (req, res) => {
           user: process.env.GMAIL_USER,
           pass: process.env.GMAIL_PASS,
         },
-        
       });
 
       var mailOptions = {
@@ -58,7 +57,7 @@ let login = async (req, res) => {
     if (existingUser) {
       if (password == existingUser.password) {
         if (existingUser.active == false) {
-          console.log("Please Verify Your Account")
+          console.log("Please Verify Your Account");
 
           res.status(200).json({ msg: "Please Verify Your Account" });
         } else {
@@ -174,32 +173,83 @@ let profile = async (req, res) => {
     });
 };
 
-let changePassword = async (req, res) => {
-  const idd = req.params;
-
-  let id;
-  Object.keys(idd).map(function (key) {
-    id = idd[key];
-  });
-
-  let { oldPassword, newPassword } = req.body;
-
-  let user = await User.findOne({ _id: id });
+let forgotPassword = async (req, res) => {
+  let forgotToken = Math.floor(Math.random() * 999999);
+  let { username } = req.body;
 
   try {
-    if (!user) {
-      return res.status(400).json("Invalid User");
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      if (existingUser.active == false) {
+        res.status(400).json({ msg: "Please Verify Your Account" });
+      } else {
+        existingUser.code = forgotToken;
+        existingUser
+          .save()
+          .then(() => {
+            // res.status(200).json({ user: existingUser });
+            console.log(existingUser);
+            let transporter = nodemailer.createTransport({
+              pool: true,
+              host: "smtp.gmail.com",
+              port: 465,
+              ignoreTLS: false,
+              secure: true,
+              auth: {
+                user: process.env.GMAIL_USER,
+                pass: process.env.GMAIL_PASS,
+              },
+            });
+
+            var mailOptions = {
+              from: '"Capital Equity Funds" noreply@capitalequityfunds.com',
+              to: existingUser.email,
+              subject: "Forgot Password",
+              text: `Dear ${existingUser.username}, copy the token below and paste it in the password recovery page
+              
+              ${forgotToken}
+              `,
+            };
+            transporter.sendMail(mailOptions, (err, info) => {
+              if (err) throw err;
+              res.status(200).json({ msg: true });
+              console.log(info);
+            });
+          })
+          .catch((error) => {
+            res.status(500).json(error);
+          });
+        // res.status(200).json({ user: existingUser });
+      }
+    } else {
+      res.status(400).json({ msg: "User does not exist" });
     }
-
-    if (user.password !== oldPassword) {
-      return res.status(400).json("Incorrect Password");
-    }
-
-    user.password = newPassword;
-
-    user.save().then(() => res.status(200).json({ user: user }));
   } catch (error) {
     res.status(500).json(error);
+  }
+};
+
+let changePassword = async (req, res) => {
+  let { code, username, newPassword } = req.body;
+
+  let legitCode = await User.findOne({ code });
+
+  if (!legitCode) {
+    res.status(400).json({ msg: "Invalid OTP" });
+  } else {
+    let user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(400).json({ msg: "User Does Not Exist" });
+    }
+    try {
+      user.password = newPassword;
+      user.code = null;
+
+      user.save().then(() => res.status(200).json({ user: user }));
+    } catch (error) {
+      res.status(500).json(error);
+    }
   }
 };
 
@@ -306,6 +356,7 @@ module.exports = {
   bankInfo,
   getUser,
   findall,
+  forgotPassword,
   changePassword,
   profile,
   createCharge,
