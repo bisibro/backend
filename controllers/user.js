@@ -7,6 +7,8 @@ const nodemailerCramMd5 = require("nodemailer-cram-md5");
 const { Client, resources } = require("coinbase-commerce-node");
 const { Charge } = resources;
 Client.init("555a6d1b-63ee-4ff7-8b80-b325819cf444").setRequestTimeout(3000);
+const path = require("path");
+var hbs = require("nodemailer-express-handlebars");
 
 let register = async (req, res) => {
   let { username, fullName, email, phone, password } = req.body;
@@ -30,12 +32,31 @@ let register = async (req, res) => {
         },
       });
 
+      const handlebarOptions = {
+        viewEngine: {
+          extName: ".handlebars",
+          partialsDir: path.resolve("./views"),
+          defaultLayout: false,
+        },
+        viewPath: path.resolve("./views"),
+        extName: ".handlebars",
+      };
+
+      transporter.use("compile", hbs(handlebarOptions));
+
       var mailOptions = {
         from: '"Capital Equity Funds" noreply@capitalequityfunds.com',
         to: newUser.email,
         subject: "Activate Account",
-        text: `https://capital-equity.herokuapp.com/users/verify-account/${newUser._id}`,
-        html: `<a href="https://capital-equity.herokuapp.com/users/verify-account/${newUser._id}"><button>Activate Account</button></a>`,
+        // text: `https://capital-equity.herokuapp.com/users/verify-account/${newUser._id}`,
+        // html: `
+
+        // <a href="https://capital-equity.herokuapp.com/users/verify-account/${newUser._id}"><button>Activate Account</button></a>`,
+        template: "email",
+        context: {
+          id: newUser._id,
+          username: newUser.username
+        },
       };
       transporter.sendMail(mailOptions, (err, info) => {
         if (err) console.log(err);
@@ -139,12 +160,30 @@ let loan = async (req, res) => {
         },
       });
 
+      const handlebarOptions = {
+        viewEngine: {
+          extName: ".handlebars",
+          partialsDir: path.resolve("./views"),
+          defaultLayout: false,
+        },
+        viewPath: path.resolve("./views"),
+        extName: ".handlebars",
+      };
+
+      transporter.use("compile", hbs(handlebarOptions));
+
+
       var mailOptions = {
         from: '"Capital Equity Funds" noreply@capitalequityfunds.com',
         to: result.email,
         subject: "Loan Request",
-        text: `Dear ${result.username}, Your Loan Request has been Receieved`,
+        // text: `Dear ${result.username}, Your Loan Request has been Receieved`,
+        template: "loan",
+        context: {
+          username: result.username
+        },
       };
+
       transporter.sendMail(mailOptions, (err, info) => {
         if (err) throw err;
         res.status(200).json({ msg: true });
@@ -201,14 +240,32 @@ let forgotPassword = async (req, res) => {
               },
             });
 
+            const handlebarOptions = {
+              viewEngine: {
+                extName: ".handlebars",
+                partialsDir: path.resolve("./views"),
+                defaultLayout: false,
+              },
+              viewPath: path.resolve("./views"),
+              extName: ".handlebars",
+            };
+      
+            transporter.use("compile", hbs(handlebarOptions));
+            
             var mailOptions = {
               from: '"Capital Equity Funds" noreply@capitalequityfunds.com',
               to: existingUser.email,
               subject: "Forgot Password",
-              text: `Dear ${existingUser.username}, copy the token below and paste it in the password recovery page
+              // text: `Dear ${existingUser.username}, copy the token below and paste it in the password recovery page
               
-              ${forgotToken}
-              `,
+              // ${forgotToken}
+              // `,
+
+              template: "password",
+             context: {
+                  username: existingUser.username,
+                  token: forgotToken
+                },
             };
             transporter.sendMail(mailOptions, (err, info) => {
               if (err) throw err;
@@ -350,6 +407,9 @@ let sendmail = (req, res) => {
   });
 };
 
+const testEmail = (req, res) => {
+  res.render('email')
+}
 module.exports = {
   register,
   login,
@@ -366,4 +426,5 @@ module.exports = {
   ublocked,
   sendmail,
   deleteAll,
+  testEmail
 };

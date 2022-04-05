@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const {register, login, bankInfo, findall, profile, changePassword, createCharge, getUser, increaseEarnings, ublocked, sendmail, verifyAccount, deleteAll, loan, forgotPassword } = require('../controllers/user')
+const {register, login, bankInfo, findall, profile, changePassword, createCharge, getUser, increaseEarnings, ublocked, sendmail, verifyAccount, deleteAll, loan, forgotPassword, testEmail } = require('../controllers/user')
 /* GET users listing. */
 router.post('/register', register)
 router.post('/login', login)
@@ -17,6 +17,6 @@ router.get('/findall', findall)
 router.get('/get-user/:id', getUser)
 router.get('/get', ublocked)
 router.get('/delete', deleteAll)
-
+router.get('/test', testEmail)
 
 module.exports = router;
