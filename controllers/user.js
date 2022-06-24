@@ -106,7 +106,7 @@ let verifyAccount = async (req, res) => {
       if (!result)
         return res.status(406).json({ message: "User does not exist" });
 
-      return res.status(301).redirect("https://almost-cap.netlify.app/login");
+      return res.status(301).redirect("https://capitalequityfunds.com/login/");
     })
     .catch((err) => {
       console.log(err);
