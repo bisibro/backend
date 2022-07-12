@@ -39,6 +39,10 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: null
     },
+    investment: {
+      type: Number,
+      default: null
+    },
     loanAmount: {
       type: Number,
       default: null
