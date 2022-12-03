@@ -169,7 +169,7 @@ let loan = async (req, res) => {
         viewPath: path.resolve("./views"),
         extName: ".handlebars",
       };
-
+ 
       transporter.use("compile", hbs(handlebarOptions));
 
 
