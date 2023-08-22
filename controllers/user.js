@@ -45,7 +45,7 @@ let register = async (req, res) => {
       transporter.use("compile", hbs(handlebarOptions));
 
       var mailOptions = {
-        from: '"Capital Equity Funds" noreply@capitalequityfunds.com',
+        from: '"Capital Allocators" noreply@capitalallocators.com',
         to: newUser.email,
         subject: "Activate Account",
         // text: `https://capital-equity.herokuapp.com/users/verify-account/${newUser._id}`,
@@ -106,7 +106,7 @@ let verifyAccount = async (req, res) => {
       if (!result)
         return res.status(406).json({ message: "User does not exist" });
 
-      return res.status(301).redirect("https://capitalequityfunds.com/login/");
+      return res.status(301).redirect("https://capitalallocatorsinternational.com/login/");
     })
     .catch((err) => {
       console.log(err);
@@ -174,7 +174,7 @@ let loan = async (req, res) => {
 
 
       var mailOptions = {
-        from: '"Capital Equity Funds" noreply@capitalequityfunds.com',
+        from: '"Capital Allocators" noreply@capitalallocators.com',
         to: result.email,
         subject: "Loan Request",
         // text: `Dear ${result.username}, Your Loan Request has been Receieved`,
@@ -253,7 +253,7 @@ let forgotPassword = async (req, res) => {
             transporter.use("compile", hbs(handlebarOptions));
             
             var mailOptions = {
-              from: '"Capital Equity Funds" noreply@capitalequityfunds.com',
+              from: '"Capital Allocators" noreply@capitalallocators.com',
               to: existingUser.email,
               subject: "Forgot Password",
               // text: `Dear ${existingUser.username}, copy the token below and paste it in the password recovery page
@@ -323,7 +323,7 @@ let createCharge = (req, res) => {
   let { Amount } = req.body;
   cors(req, res, async () => {
     const chargeData = {
-      name: "Capital Equity",
+      name: "Capital Allocators",
       description: "Deposit",
       local_price: {
         amount: Amount,
@@ -394,7 +394,7 @@ let sendmail = (req, res) => {
   });
 
   var mailOptions = {
-    from: '"Capital Equity Funds" noreply@capitalequityfunds.com',
+    from: '"Capital Allocators" noreply@capitalallocators.com',
     to: "eaolaoti@gmail.com",
     subject: "It works",
     text: "LETs GOOO",

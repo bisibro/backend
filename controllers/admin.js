@@ -1,3 +1,4 @@
+const { lexicographicSortSchema } = require("graphql");
 const User = require("../Models/user");
 
 const AdminLogin = async (req, res) => {
@@ -45,6 +46,24 @@ let getAUser = async (req, res) => {
     }
   });
 };
+//DELETTE USERR
+
+let deleteUser = async(req, res)=> {
+  let {id} = req.body
+
+  try {
+      User.findById(id, (err, doc )=>{
+        if(doc){
+          console.log(doc)
+        }else{
+          console.log('jjj')
+        }
+      })
+  } catch (error) {
+    console.log(errror)
+  }
+}
+
 
 let blockUser = async (req, res) => {
   // const idd = req.params;
